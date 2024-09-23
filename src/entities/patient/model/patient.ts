@@ -1,11 +1,13 @@
 import {
   Column,
   DataType,
+  HasMany,
   Model,
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
 import { Optional } from "sequelize";
+import { Appointment } from "@app/entities/appointment/model/appointment";
 
 interface PatientAttributes {
   id: number;
@@ -61,6 +63,9 @@ class Patient extends Model {
 
   @Column({ field: "history", type: DataType.JSON })
   history: object;
+
+  @HasMany(() => Appointment)
+  appointments: Appointment[];
 }
 
 export { Patient, PatientCreationAttributes };
