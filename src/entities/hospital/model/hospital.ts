@@ -7,7 +7,8 @@ import {
   Table,
 } from "sequelize-typescript";
 import { Optional } from "sequelize";
-import { Appointment } from "@app/entities/appointment/model/appointment";
+import { Appointment } from "../../../entities/appointment/model/appointment";
+import { Department } from "../../../entities/department/model/department";
 
 interface HospitalAttributes {
   id: number;
@@ -47,6 +48,9 @@ class Hospital extends Model {
 
     @HasMany(() => Appointment)
     appointments: Appointment[];
+
+    @HasMany(() => Department)
+    departments: Department[];
 }
 
 export { Hospital, HospitalAttributes, HospitalCreationAttributes };

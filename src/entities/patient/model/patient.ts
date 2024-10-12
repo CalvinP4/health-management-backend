@@ -7,7 +7,7 @@ import {
   Table,
 } from "sequelize-typescript";
 import { Optional } from "sequelize";
-import { Appointment } from "@app/entities/appointment/model/appointment";
+import { Appointment } from "../../../entities/appointment/model/appointment";
 
 interface PatientAttributes {
   id: number;

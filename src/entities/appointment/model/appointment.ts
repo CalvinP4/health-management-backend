@@ -7,9 +7,9 @@ import {
   Table,
 } from "sequelize-typescript";
 import { Optional } from "sequelize";
-import { Doctor } from "@app/entities/doctor/model/doctor";
-import { Patient } from "@app/entities/patient/model/patient";
-import { Hospital } from "@app/entities/hospital/model/hospital";
+import { Doctor } from "../../../entities/doctor/model/doctor";
+import { Patient } from "../../../entities/patient/model/patient";
+import { Hospital } from "../../../entities/hospital/model/hospital";
 
 interface AppointmentAttributes {
     id: number;
@@ -19,7 +19,6 @@ interface AppointmentAttributes {
     startTime: Date;
     endTime: Date;
     type: string;
-    status: string;
     reason: string;
     notes: string;
     symptoms: string;
@@ -37,15 +36,15 @@ class Appointment extends Model {
     id: number;
     
     @ForeignKey(() => Doctor)
-    @Column({ field: "doctor_id" })
+    @Column({ field: "tbl_doctor_id" })
     doctorId: number;
     
     @ForeignKey(() => Patient)
-    @Column({ field: "patient_id" })
+    @Column({ field: "tbl_patient_id" })
     patientId: number;
     
     @ForeignKey(() => Hospital)
-    @Column({ field: "hospital_id" })
+    @Column({ field: "tbl_hospital_id" })
     hospitalId: number;
     
     @Column({ field: "start_time", type: DataType.DATE })
@@ -56,9 +55,6 @@ class Appointment extends Model {
     
     @Column({ field: "type" })
     type: string;
-    
-    @Column({ field: "status" })
-    status: string;
     
     @Column({ field: "reason" })
     reason: string;
