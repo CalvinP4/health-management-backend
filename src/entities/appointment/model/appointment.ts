@@ -50,8 +50,8 @@ class Appointment extends Model {
     @Column({ field: "start_time", type: DataType.DATE })
     startTime: Date;
     
-    @Column({ field: "end_time", type: DataType.DATE })
-    endTime: Date;
+   @Column({ field: "end_time", type: DataType.DATE })
+    endTime: Date; 
     
     @Column({ field: "type" })
     type: string;

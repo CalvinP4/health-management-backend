@@ -20,7 +20,7 @@ interface DoctorAttributes {
   password: string;
   specialization: string;
   licensedYear: Date;
-  licensedBy: Date;
+  licensedBy: string;
   schedule: object;
 }
 
@@ -69,7 +69,7 @@ class Doctor extends Model {
     licensedYear: Date;
     
     @Column({ field: "licensed_by" })
-    licensedBy: Date;
+    licensedBy: string;
     
     @Column({ field: "schedule", type: DataType.JSON })
     schedule: Buffer;

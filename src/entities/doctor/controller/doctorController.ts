@@ -1,3 +1,4 @@
+import { Doctor } from "../model/doctor";
 import { DoctorService } from "../service/doctorService";
 import express, { Request, Response } from "express";
 
@@ -29,6 +30,26 @@ router.delete("/:id", async (req: Request, res: Response) => {
   const id = Number(req.params.id);
   await doctor.deleteDoctor(id);
   res.json({ message: "Doctor deleted successfully" });
+});
+
+router.post("/delete-slot", async (req: Request, res: Response) => {
+  const { doctorId, day, slot } = req.body;
+  const updatedDoctor = await doctor.deleteSlot(doctorId, day, slot);
+  res.json(updatedDoctor);
+});
+
+router.post("/add-slot", async (req: Request, res: Response) => {
+  const { doctorId, day, start, end, hospitalId } = req.body;
+  console.log(req.body);
+  
+  const updatedDoctor = await doctor.addSlot(
+    doctorId,
+    day,
+    start,
+    end,
+    hospitalId
+  );
+  res.json(updatedDoctor);
 });
 
 export default router;
