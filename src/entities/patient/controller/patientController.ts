@@ -25,6 +25,12 @@ router.put("/", async (req: Request, res: Response) => {
   res.json(updatedPatient);
 });
 
+router.patch("/:id", async (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const updatedPatient = await patient.patchPatientById(id, req.body);
+  res.json(updatedPatient);
+});
+
 router.get("/:id", async (req: Request, res: Response) => {
     const id = Number(req.params.id);
     const patientById = await patient.getPatientById(id);

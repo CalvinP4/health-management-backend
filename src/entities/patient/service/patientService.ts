@@ -29,4 +29,13 @@ export class PatientService {
     public async deletePatient(id: number): Promise<void> {
         await Patient.destroy({ where: { id } });
     }
+    
+    public async patchPatientById(id: number, patient: Patient): Promise<Patient> {
+        await Patient.update(patient, { where: { id } });
+        const updatedPatient = await Patient.findByPk(id);
+        if (!updatedPatient) {
+            throw new Error("Patient not found");
+        }
+        return updatedPatient;
+    }
 }
