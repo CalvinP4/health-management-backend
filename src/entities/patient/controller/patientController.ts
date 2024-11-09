@@ -16,8 +16,8 @@ router.get("/:id", async (req: Request, res: Response) => {
 });
 
 router.post("/", async (req: Request, res: Response) => {
-  const newPatient = await patient.createPatient(req.body);
-  res.json(newPatient);
+  const new_Patient = await patient.createPatient(req.body);
+  res.json(new_Patient);
 });
 
 router.put("/", async (req: Request, res: Response) => {
