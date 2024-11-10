@@ -30,6 +30,15 @@ export class DoctorService {
     await Doctor.destroy({ where: { id } });
   }
 
+  public async patchDoctorById(doctor: Doctor, id: number): Promise<Doctor> {
+    await Doctor.update(doctor, { where: { id } });
+    const updatedDoctor = await Doctor.findByPk(id);
+    if (!updatedDoctor) {
+      throw new Error("Doctor not found");
+    }
+    return updatedDoctor;
+  }
+
   public async deleteSlot(
     doctorId: number,
     day: string,

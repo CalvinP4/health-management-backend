@@ -32,6 +32,12 @@ router.delete("/:id", async (req: Request, res: Response) => {
   res.json({ message: "Doctor deleted successfully" });
 });
 
+router.patch("/:id", async (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const updatedDoctor = await doctor.patchDoctorById(req.body, id);
+  res.json(updatedDoctor);
+});
+
 router.post("/delete-slot", async (req: Request, res: Response) => {
   const { doctorId, day, slot } = req.body;
   const updatedDoctor = await doctor.deleteSlot(doctorId, day, slot);
