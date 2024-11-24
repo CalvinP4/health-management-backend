@@ -1,4 +1,6 @@
 import { Doctor, DoctorCreationAttributes } from "../model/doctor";
+import { sequelize } from "../../config/db/DatabaseConfig";
+import { QueryTypes } from "sequelize";
 
 export class DoctorService {
   public async getDoctors(): Promise<Doctor[]> {
@@ -83,10 +85,10 @@ export class DoctorService {
     day: string,
     start: string,
     end: string,
-    hospital: number,
+    hospital: number
   ): Promise<Doctor> {
     console.log(doctorId, day, start, end, hospital);
-    
+
     const doctor = await Doctor.findByPk(doctorId);
     if (!doctor) {
       throw new Error("Doctor not found");
@@ -110,4 +112,25 @@ export class DoctorService {
 
     return doctor;
   }
+
+  public fetchDoctorsByHospitalId = async (hospitalId: number) => {
+    if (!hospitalId) {
+      throw new Error("Hospital ID is required");
+    }
+
+    const query = `
+    SELECT d.*
+    FROM tbl_doctor d
+    INNER JOIN tbl_doctor_departments dd ON d.id = dd.tbl_doctor_id
+    INNER JOIN tbl_department dep ON dd.tbl_department_id = dep.id
+    WHERE dep.tbl_hospital_id = :hospitalId;
+  `;
+
+    const doctors = await sequelize.query(query, {
+      replacements: { hospitalId },
+      type: QueryTypes.SELECT,
+    });
+
+    return doctors;
+  };
 }

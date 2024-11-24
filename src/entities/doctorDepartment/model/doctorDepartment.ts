@@ -19,18 +19,18 @@ interface DoctorDepartmentCreationAttributes extends Optional<DoctorDepartmentAt
 
 
 @Table({
-  tableName: "tbl_doctor_department",
+  tableName: "tbl_doctor_departments",
   timestamps: false,
 })
 class DoctorDepartment extends Model {
   @PrimaryKey
   @ForeignKey(() => Doctor)
-  @Column({ field: "doctor_id" })
+  @Column({ field: "tbl_doctor_id" })
   doctorId: number;
 
   @PrimaryKey
   @ForeignKey(() => Department)
-  @Column({ field: "department_id" })
+  @Column({ field: "tbl_department_id" })
   departmentId: number;
 }
 
