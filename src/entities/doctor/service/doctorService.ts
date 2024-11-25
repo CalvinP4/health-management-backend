@@ -129,6 +129,8 @@ export class DoctorService {
     const doctors = await sequelize.query(query, {
       replacements: { hospitalId },
       type: QueryTypes.SELECT,
+      model: Doctor,
+      mapToModel: true,
     });
 
     return doctors;

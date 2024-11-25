@@ -4,12 +4,18 @@ import express, { Request, Response } from "express";
 const router = express.Router();
 const appointment = new AppointmentService();
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response) => {  
   const appointments = await appointment.getAppointments();
   res.json(appointments);
 });
 
-router.get("/:id", async (req: Request, res: Response) => {
+router.get("/doctor/:doctorId", async (req: Request, res: Response) => {    
+  const doctorId = Number(req.params.doctorId);
+  const appointmentsByDoctorId = await appointment.getAppointmentsByDoctorId(doctorId);
+  res.json(appointmentsByDoctorId);
+});
+
+router.get("/:id", async (req: Request, res: Response) => {  
   const id = Number(req.params.id);
   const appointmentById = await appointment.getAppointmentById(id);
   res.json(appointmentById);
@@ -37,11 +43,6 @@ router.get("/patient/:patientId", async (req: Request, res: Response) => {
   res.json(appointmentsByPatientId);
 });
 
-router.get("/doctor/:doctorId", async (req: Request, res: Response) => {
-  const doctorId = Number(req.params.doctorId);
-  const appointmentsByDoctorId = await appointment.getAppointmentsByDoctorId(doctorId);
-  res.json(appointmentsByDoctorId);
-});
 
 router.get("/hospital/:hospitalId", async (req: Request, res: Response) => {
   const hospitalId = Number(req.params.hospitalId);

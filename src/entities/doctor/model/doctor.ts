@@ -6,8 +6,6 @@ import {
   Table,
 } from "sequelize-typescript";
 import { Optional } from "sequelize";
-import { Department } from "@app/entities/department/model/department";
-import { DoctorDepartment } from "@app/entities/doctorDepartment/model/doctorDepartment";
 
 interface DoctorAttributes {
   id: number;
