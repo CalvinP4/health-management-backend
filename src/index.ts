@@ -7,6 +7,7 @@ import hospitalController from './entities/hospital/controller/hospitalControlle
 import appointmentController from './entities/appointment/controller/appointmentController';
 import doctorDepartment from './entities/doctorDepartment/controller/doctorDepartmentController';
 import departmentController from './entities/department/controller/departmentController';
+import slotController from './entities/slot/controller/slotController';
 import { initDatabase } from './entities/config/db/DatabaseConfig';
 
 dotenv.config();
@@ -24,6 +25,7 @@ app.use('/hospital', hospitalController);
 app.use('/appointment', appointmentController);
 app.use('/doctorDepartment', doctorDepartment);
 app.use('/department', departmentController);
+app.use('/slot', slotController);
 
 app.listen(port, async () => {
     console.log(`Server is running on port ${port}`);

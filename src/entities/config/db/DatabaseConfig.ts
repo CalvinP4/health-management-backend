@@ -7,6 +7,7 @@ import { DoctorDepartment } from "../../../entities/doctorDepartment/model/docto
 import { Hospital } from "../../../entities/hospital/model/hospital";
 
 import dotenv from 'dotenv';
+import { Slot } from "../../../entities/slot/model/slot";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -19,7 +20,7 @@ export const sequelize = new Sequelize({
   password: process.env.DB_PASSWORD,
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
-  models: [Patient, Doctor, Hospital, Appointment, Department, DoctorDepartment],
+  models: [Patient, Doctor, Hospital, Appointment, Department, DoctorDepartment, Slot],
 });
 
 export async function initDatabase(): Promise<void> {
