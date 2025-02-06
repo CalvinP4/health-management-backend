@@ -18,6 +18,7 @@ interface SlotAttributes {
   slotDate: Date;
   doctorId: number;
   hospitalId: number;
+  apptStatus: number;
 }
 
 interface SlotCreationAttributes extends Optional<SlotAttributes, "id"> {}
@@ -39,6 +40,9 @@ class Slot extends Model {
 
   @Column({ field: "slot_date", type: DataType.DATE })
   slotDate: Date;
+
+  @Column({field: "appt_status", type: DataType.SMALLINT})
+  apptStatus: number;
 
   @ForeignKey(() => Doctor)
   @Column({ field: "tbl_doctor_id" })
