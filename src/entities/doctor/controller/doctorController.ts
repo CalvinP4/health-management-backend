@@ -46,23 +46,5 @@ router.patch("/:id", async (req: Request, res: Response) => {
   res.json(updatedDoctor);
 });
 
-router.post("/delete-slot", async (req: Request, res: Response) => {  
-  const { doctorId, day, slot } = req.body;
-  const updatedDoctor = await doctor.deleteSlot(doctorId, day, slot);
-  res.json(updatedDoctor);
-});
-
-router.post("/add-slot", async (req: Request, res: Response) => {
-  const { doctorId, day, start, end, hospitalId } = req.body;
-  
-  const updatedDoctor = await doctor.addSlot(
-    doctorId,
-    day,
-    start,
-    end,
-    hospitalId
-  );
-  res.json(updatedDoctor);
-});
 
 export default router;

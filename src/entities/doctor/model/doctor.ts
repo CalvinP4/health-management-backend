@@ -21,7 +21,6 @@ interface DoctorAttributes {
   specialization: string;
   licensedYear: Date;
   licensedBy: string;
-  schedule: object;
 }
 
 interface DoctorCreationAttributes extends Optional<DoctorAttributes, "id"> {}
@@ -70,9 +69,6 @@ class Doctor extends Model {
     
     @Column({ field: "licensed_by" })
     licensedBy: string;
-    
-    @Column({ field: "schedule", type: DataType.JSON })
-    schedule: Buffer;
 
     @Column({field: "rating"})
     rating: number;

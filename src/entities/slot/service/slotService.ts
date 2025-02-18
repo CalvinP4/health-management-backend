@@ -18,8 +18,13 @@ export class SlotService {
     return slot;
   }
 
-  public async createSlot(slot: SlotCreationAttributes): Promise<Slot> {
-    return await Slot.create(slot);
+  public async createSlot(slot: SlotCreationAttributes): Promise<Slot| null> {
+    const createdSlot = await Slot.create(slot);
+    const newSlot = await Slot.findByPk(createdSlot.id);
+    if (!slot) {
+      throw new Error("Slot not found after creation");
+    }
+    return newSlot;
   }
 
   public async updateSlot(slot: Slot): Promise<Slot> {
