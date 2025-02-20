@@ -18,6 +18,8 @@ export class AppointmentService {
     }
 
     public async updateAppointment(appointment: Appointment): Promise<Appointment> {
+        console.log(appointment);
+        
         await Appointment.update(appointment, { where: { id: appointment.id } });
         const updatedAppointment = await Appointment.findByPk(appointment.id);
         if (!updatedAppointment) {

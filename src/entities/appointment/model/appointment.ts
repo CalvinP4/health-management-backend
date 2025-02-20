@@ -22,6 +22,7 @@ interface AppointmentAttributes {
     reason: string;
     notes: string;
     symptoms: string;
+    status: string;
 }
 
 interface AppointmentCreationAttributes extends Optional<AppointmentAttributes, "id"> {}
@@ -64,6 +65,9 @@ class Appointment extends Model {
     
     @Column({ field: "symptoms" })
     symptoms: string;
+
+    @Column({ field: "status" })
+    status: string;
 }
 
 export { Appointment, AppointmentAttributes, AppointmentCreationAttributes };

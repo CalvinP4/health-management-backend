@@ -47,11 +47,29 @@ export class DoctorService {
     }
 
     const query = `
-    SELECT d.*
-    FROM tbl_doctor d
-    INNER JOIN tbl_doctor_departments dd ON d.id = dd.tbl_doctor_id
-    INNER JOIN tbl_department dep ON dd.tbl_department_id = dep.id
-    WHERE dep.tbl_hospital_id = :hospitalId;
+    SELECT 
+      d.id,
+      d.age,
+      d.dob,
+      d.email,
+      d.password,
+      d.address,
+      d.specialization,
+      d.rating,
+      d.first_name,
+      d.middle_name,
+      d.last_name,
+      d.phone_no,
+      d.licensed_year,
+      d.licensed_by
+    FROM 
+        tbl_doctor d
+    JOIN 
+        tbl_doctor_hospital dh ON d.id = dh.tbl_doctor_id
+    JOIN 
+        tbl_hospital h ON dh.tbl_hospital_id = h.id 
+    WHERE 
+        h.id = :hospitalId;
   `;
 
     const doctors = await sequelize.query(query, {
@@ -61,6 +79,9 @@ export class DoctorService {
       mapToModel: true,
     });
 
-    return doctors;
+    console.log(doctors);
+    
+
+    return doctors as Doctor[];
   };
 }
