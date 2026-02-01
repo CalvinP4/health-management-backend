@@ -15,7 +15,6 @@ interface PatientAttributes {
   middleName: string;
   lastName: string;
   dob: Date;
-  age: number;
   email: string;
   phoneNo: string;
   address: string;
@@ -45,9 +44,6 @@ class Patient extends Model<PatientAttributes, PatientCreationAttributes> {
 
   @Column({ field: "dob", type: DataType.DATE })
   dob: Date;
-
-  @Column({ field: "age", type: DataType.SMALLINT })
-  age: number;
 
   @Column({ field: "email" })
   email: string;

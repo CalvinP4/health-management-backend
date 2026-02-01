@@ -29,7 +29,7 @@ interface DoctorCreationAttributes extends Optional<DoctorAttributes, "id"> {}
   tableName: "tbl_doctor",
   timestamps: false, // Disable Sequelize from automatically adding `createdAt` and `updatedAt` columns
 })
-class Doctor extends Model {
+class Doctor extends Model<DoctorAttributes, DoctorCreationAttributes> {
     @PrimaryKey
     @Column({ type: DataType.INTEGER, field: "id" })
     id: number;
@@ -72,6 +72,12 @@ class Doctor extends Model {
 
     @Column({field: "rating"})
     rating: number;
+
+    toJSON() {
+        const values: any = Object.assign({}, this.get());
+        if (values.password) delete values.password;
+        return values;
+    }
 }
 
 

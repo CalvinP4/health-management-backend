@@ -15,6 +15,22 @@ export class DoctorService {
     return doctor;
   }
 
+  public async getDoctorByEmail(email: string): Promise<Doctor | null> {
+    return await Doctor.findOne({ where: { email } });
+  }
+
+  public async authenticate(email: string, password: string): Promise<Doctor> {
+    const doctor = await this.getDoctorByEmail(email);
+    if (!doctor) {
+      throw new Error("Invalid credentials");
+    }
+    // Plain-text comparison for now; switch to hashed passwords later
+    if (doctor.password !== password) {
+      throw new Error("Invalid credentials");
+    }
+    return doctor;
+  }
+
   public async createDoctor(doctor: DoctorCreationAttributes): Promise<Doctor> {
     return await Doctor.create(doctor);
   }
