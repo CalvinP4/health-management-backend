@@ -1,0 +1,313 @@
+// =========================
+// Core: People + Auth
+// =========================
+
+Table user_account {
+  id bigint [pk, increment]
+  user_type varchar(20) [not null] // 'patient' | 'doctor' | 'admin'
+  email varchar(255) [not null, unique]
+  phone varchar(20)
+  password_hash varchar(255) [not null]
+  is_active boolean [not null, default: true]
+  created_at datetime [not null]
+  updated_at datetime [not null]
+}
+
+Table patient {
+  id bigint [pk] // 1-1 with user_account.id
+  first_name varchar(200) [not null]
+  middle_name varchar(200)
+  last_name varchar(200) [not null]
+  dob date
+  address_line1 varchar(200)
+  address_line2 varchar(200)
+  city varchar(100)
+  state char(2)
+  postal_code varchar(20)
+  created_at datetime [not null]
+  updated_at datetime [not null]
+}
+
+Table doctor {
+  id bigint [pk] // 1-1 with user_account.id
+  first_name varchar(200) [not null]
+  middle_name varchar(200)
+  last_name varchar(200) [not null]
+  dob date
+  specialization varchar(200)
+  licensed_on date
+  licensed_by varchar(200)
+  rating decimal(3,2) // e.g. 4.75
+  created_at datetime [not null]
+  updated_at datetime [not null]
+}
+
+Table admin {
+  id bigint [pk] // 1-1 with user_account.id
+  first_name varchar(200) [not null]
+  middle_name varchar(200)
+  last_name varchar(200) [not null]
+  dob date
+  created_at datetime [not null]
+  updated_at datetime [not null]
+}
+
+Ref: patient.id - user_account.id
+Ref: doctor.id - user_account.id
+Ref: admin.id - user_account.id
+
+
+// =========================
+// Hospital + Departments
+// =========================
+
+Table hospital {
+  id bigint [pk, increment]
+  name varchar(200) [not null]
+  county varchar(100)
+  state char(2)
+  street varchar(200)
+  beds_total int
+  beds_available int
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  Indexes {
+    (name)
+    (state)
+  }
+}
+
+Table department {
+  id bigint [pk, increment]
+  hospital_id bigint [not null]
+  name varchar(200) [not null]
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  Indexes {
+    (hospital_id, name) [unique]
+  }
+}
+
+Table doctor_department {
+  doctor_id bigint [not null]
+  department_id bigint [not null]
+  created_at datetime [not null]
+
+  Indexes {
+    (doctor_id, department_id) [pk]
+    (department_id)
+  }
+}
+
+Ref: department.hospital_id > hospital.id
+Ref: doctor_department.doctor_id > doctor.id
+Ref: doctor_department.department_id > department.id
+
+
+// =========================
+// Scheduling: Slots + Appointments
+// =========================
+
+Table slot_status {
+  code smallint [pk]   // 1=available,2=reserved,3=booked,4=blocked
+  name varchar(50) [not null, unique]
+}
+
+Table slot {
+  id bigint [pk, increment]
+  doctor_id bigint [not null]
+  hospital_id bigint [not null]
+  date date [not null]
+  start_time time [not null]
+  end_time time [not null]
+  status_code smallint [not null]
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  Indexes {
+    (doctor_id, date, start_time)
+    (hospital_id, date)
+  }
+}
+
+Table appointment_status {
+  code smallint [pk]   // 1=requested,2=confirmed,3=completed,4=cancelled,5=no_show
+  name varchar(50) [not null, unique]
+}
+
+Table appointment {
+  id bigint [pk, increment]
+  patient_id bigint [not null]
+  doctor_id bigint [not null]
+  hospital_id bigint [not null]
+  slot_id bigint [not null, unique] // one appointment per slot
+  appointment_type varchar(100) // can be lookup later
+  reason varchar(200)
+  notes text
+  symptoms varchar(500)
+  status_code smallint [not null]
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  Indexes {
+    (patient_id, created_at)
+    (doctor_id, created_at)
+    (hospital_id, created_at)
+  }
+}
+
+Ref: slot.doctor_id > doctor.id
+Ref: slot.hospital_id > hospital.id
+Ref: slot.status_code > slot_status.code
+
+Ref: appointment.patient_id > patient.id
+Ref: appointment.doctor_id > doctor.id
+Ref: appointment.hospital_id > hospital.id
+Ref: appointment.slot_id > slot.id
+Ref: appointment.status_code > appointment_status.code
+
+
+// =========================
+// Reports (patient medical reports)
+// =========================
+
+Table report_type {
+  code smallint [pk]   // e.g. 1=xray,2=blood,3=scan,4=other
+  name varchar(50) [not null, unique]
+}
+
+Table report {
+  id bigint [pk, increment]
+  patient_id bigint [not null]
+  type_code smallint [not null]
+  permitted boolean [not null, default: false]
+  prediction varchar(200)
+  impression text
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  Indexes {
+    (patient_id, created_at)
+  }
+}
+
+Table report_file {
+  id bigint [pk, increment]
+  report_id bigint [not null]
+  file_url varchar(500) [not null]
+  mime_type varchar(100)
+  created_at datetime [not null]
+
+  Indexes {
+    (report_id)
+  }
+}
+
+Ref: report.patient_id > patient.id
+Ref: report.type_code > report_type.code
+Ref: report_file.report_id > report.id
+
+
+// =========================
+// Catalog: Services + Medicines (with effective dates)
+// =========================
+
+Table service {
+  id bigint [pk, increment]
+  service_name varchar(100) [not null]
+  service_code varchar(20) [not null, unique]
+  service_type varchar(100)
+  effective_from date
+  effective_to date
+  updated_by_admin_id bigint
+  created_at datetime [not null]
+  updated_at datetime [not null]
+}
+
+Table medicine {
+  id bigint [pk, increment]
+  commercial_name varchar(100) [not null]
+  chemical_name varchar(200)
+  medicine_type varchar(50)
+  company varchar(200)
+  effective_from date
+  effective_to date
+  updated_by_admin_id bigint
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  Indexes {
+    (commercial_name, company)
+  }
+}
+
+Ref: service.updated_by_admin_id > admin.id
+Ref: medicine.updated_by_admin_id > admin.id
+
+
+// =========================
+// Billing: Bill + Line Items (price snapshot)
+// =========================
+
+Table payment_mode {
+  code smallint [pk]  // 1=cash,2=card,3=upi,4=insurance,5=other
+  name varchar(50) [not null, unique]
+}
+
+Table bill {
+  id bigint [pk, increment]
+  appointment_id bigint [not null, unique] // usually 1 bill per appointment
+  payment_mode_code smallint [not null]
+  created_by_admin_id bigint
+  insurance_covering decimal(10,2) [not null, default: 0]
+  subtotal decimal(10,2) [not null, default: 0]
+  admin_fee decimal(10,2) [not null, default: 0]
+  tax decimal(10,2) [not null, default: 0]
+  total decimal(10,2) [not null, default: 0]
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  Indexes {
+    (created_at)
+  }
+}
+
+Table bill_service_item {
+  bill_id bigint [not null]
+  service_id bigint [not null]
+  qty int [not null, default: 1]
+  unit_price decimal(10,2) [not null]  // snapshot
+  line_total decimal(10,2) [not null]  // qty*unit_price
+  created_at datetime [not null]
+
+  Indexes {
+    (bill_id, service_id) [pk]
+    (service_id)
+  }
+}
+
+Table bill_medicine_item {
+  bill_id bigint [not null]
+  medicine_id bigint [not null]
+  qty int [not null, default: 1]
+  unit_price decimal(10,2) [not null]  // snapshot
+  line_total decimal(10,2) [not null]
+  created_at datetime [not null]
+
+  Indexes {
+    (bill_id, medicine_id) [pk]
+    (medicine_id)
+  }
+}
+
+Ref: bill.appointment_id > appointment.id
+Ref: bill.payment_mode_code > payment_mode.code
+Ref: bill.created_by_admin_id > admin.id
+
+Ref: bill_service_item.bill_id > bill.id
+Ref: bill_service_item.service_id > service.id
+
+Ref: bill_medicine_item.bill_id > bill.id
+Ref: bill_medicine_item.medicine_id > medicine.id

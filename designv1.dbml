@@ -1,0 +1,186 @@
+Table tbl_patient {
+  id integer [pk]
+  first_name varchar(200)
+  middle_name varchar(200)
+  last_name varchar(200)
+  age smallint
+  dob datetime
+  email varchar(100)
+  phone_no varchar(11)
+  password varchar(50)
+  address varchar(200)
+  history blob
+}
+
+Table tbl_doctor {
+  id integer [pk]
+  first_name varchar(200)
+  middle_name varchar(200)
+  last_name varchar(200)
+  age smallint
+  dob datetime
+  email varchar(100)
+  phone_mo varchar(11)
+  password varchar(50)
+  address varchar(200)
+  specialization varchar(200)
+  licensed_year datetime
+  licensed_by varchar(200)
+  rating decimal
+}
+
+Table tbl_hospital {
+  id integer [pk]
+  name varchar(200)
+  county varchar(100)
+  state char(2) [unique]
+  street varchar(200)
+  beds_total integer
+  beds_available integer
+}
+
+Table tbl_department {
+  id integer [pk]
+  name varchar(200)
+  tbl_hospital_id integer
+}
+
+Table tbl_doctor_departments {
+  tbl_doctor_id integer
+  tbl_department_id integer
+
+  Indexes {
+    (tbl_doctor_id, tbl_department_id) [pk]
+  }
+}
+
+Table tbl_reports {
+  id integer [pk]
+  tbl_patient_id integer
+  image_link varchar(200)
+  type varchar
+  permitted boolean
+  prediction varchar(200)
+  impression text
+}
+
+Table tbl_appointment {
+  id integer [pk]
+  tbl_doctor_id integer
+  tbl_patient_id integer
+  tbl_hospital_id integer
+  tbl_slot_id integer
+  start_time datetime
+  end_time datetime
+  type varchar(100)
+  reason varchar(100)
+  notes varchar(2000)
+  symptoms varchar(500)
+  status varchar
+}
+
+// NEW TABLES
+
+Table tbl_service {
+  id integer [pk]
+  service_name varchar(100)
+  servie_code varchar(10)
+  service_type varchar(100)
+  min_price integer
+  max_price integer
+  effective_date datetime
+  expiry_date datetime
+  last_updated_by integer
+}
+
+Table tbl_medicine {
+  id integer [pk]
+  commercial_name varchar(100)
+  chemical_name varchar(200)
+  type varchar(50)
+  price decimal
+  company varchar(200)
+  effective_date date
+  expiry_date date
+  last_updated_by integer
+}
+
+Table tbl_bill {
+  id integer [pk]
+  tbl_appointment_id integer
+  mode_of_payment varchar(100)
+  admin_charge integer
+  total integer
+  insurance_covering integer
+}
+
+Table tbl_admin {
+  id integer [pk]
+  first_name varchar(200)
+  middle_name varchar(200)
+  last_name varchar(200)
+  age smallint
+  dob date
+  email varchar(100)
+  phone_no varchar(13)
+  password varchar(50)
+  address varchar(200)
+}
+
+Table tbl_slot {
+  id integer [pk]
+  start_time time
+  end_time time
+  date date
+  tbl_doctor_id integer
+  tbl_hospital_id integer
+  status smallint
+}
+
+Table tbl_bill_services {
+  tbl_service_id integer
+  tbl_bill_id integer
+
+  Indexes {
+    (tbl_service_id, tbl_bill_id) [pk]
+  }
+}
+
+Table tbl_bill_medicines {
+  tbl_bill_id integer
+  tbl_medicine_id integer
+  count integer
+
+  Indexes {
+    (tbl_bill_id, tbl_medicine_id) [pk]
+  }
+}
+
+
+// NEW RELATIONSHIPS
+
+Ref: tbl_bill.tbl_appointment_id > tbl_appointment.id
+
+
+Ref: tbl_bill_services.tbl_service_id > tbl_service.id
+Ref: tbl_bill_services.tbl_bill_id > tbl_bill.id
+
+Ref: tbl_bill_medicines.tbl_bill_id > tbl_bill.id
+Ref: tbl_bill_medicines.tbl_medicine_id > tbl_medicine.id
+
+Ref: tbl_slot.tbl_doctor_id > tbl_doctor.id
+Ref: tbl_slot.tbl_hospital_id > tbl_hospital.id
+
+
+Ref: tbl_department.tbl_hospital_id > tbl_hospital.id
+
+Ref: tbl_doctor_departments.tbl_doctor_id > tbl_doctor.id
+Ref: tbl_doctor_departments.tbl_department_id > tbl_department.id
+
+Ref: tbl_reports.tbl_patient_id > tbl_patient.id
+
+Ref: tbl_appointment.tbl_patient_id > tbl_patient.id
+Ref: tbl_appointment.tbl_doctor_id > tbl_doctor.id
+Ref: tbl_appointment.tbl_hospital_id > tbl_hospital.id
+
+

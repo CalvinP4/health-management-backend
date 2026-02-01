@@ -13,6 +13,22 @@ export class PatientService {
         return patient;
     }
 
+    public async getPatientByEmail(email: string): Promise<Patient | null> {
+        return await Patient.findOne({ where: { email } });
+    }
+
+    public async authenticate(email: string, password: string): Promise<Patient> {
+        const patient = await this.getPatientByEmail(email);
+        if (!patient) {
+            throw new Error("Invalid credentials");
+        }
+        // Plain-text comparison for now; switch to hashed passwords later
+        if (patient.password !== password) {
+            throw new Error("Invalid credentials");
+        }
+        return patient;
+    }
+
     public async createPatient(patient: PatientCreationAttributes): Promise<Patient> {
         return await Patient.create(patient);
     }

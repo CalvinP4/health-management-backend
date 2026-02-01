@@ -29,7 +29,7 @@ interface PatientCreationAttributes extends Optional<PatientAttributes, "id"> {}
   tableName: "tbl_patient",
   timestamps: false, // Disable Sequelize from automatically adding `createdAt` and `updatedAt` columns
 })
-class Patient extends Model {
+class Patient extends Model<PatientAttributes, PatientCreationAttributes> {
   @PrimaryKey
   @Column({ type: DataType.INTEGER, field: "id" })
   id: number;
@@ -66,6 +66,12 @@ class Patient extends Model {
 
   @HasMany(() => Appointment)
   appointments: Appointment[];
+
+  toJSON() {
+    const values: any = Object.assign({}, this.get());
+    if (values.password) delete values.password;
+    return values;
+  }
 }
 
 export { Patient, PatientCreationAttributes };
